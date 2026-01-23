@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сватбата на Регина и Николай | 06.06.2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
+        h1, h2, h3, .serif { font-family: 'Playfair Display', serif; }
+        html { scroll-behavior: smooth; }
+        
+        /* Цветова Палитра */
+        :root {
+            --dark-green: #1A4D2E;
+            --bg-color: #F9F7F2;
+            --envelope-color: #f4f1ea;
+            --flap-color: #e8e2d2;
+        }
+
+        /* --- ENVELOPE (FIXED ANIMATION) --- */
+        #envelope-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #111; /* Dark background to make envelope pop */
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s ease;
+            background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+        }
+
+        .envelope-wrapper {
+            position: relative;
+            cursor: pointer;
+            /* Fixed Aspect Ratio Container */
+            width: 320px;
+            height: 220px;
+            /* Scales up on larger screens */
+        }
+        @media (min-width: 768px) {
+            .envelope-wrapper { width: 480px; height: 320px; }
+        }
+
+        .envelope {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: var(--envelope-color);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            border-radius: 4px;
+            overflow: visible; /* Changed to visible so flap can rotate out */
+        }
+
+        /* Paper Texture */
+        .envelope::before {
+            content: ''; position: absolute; inset: 0;
+            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
+            opacity: 0.5; pointer-events: none;
+        }
+
+        /* The Card Inside - Hidden initially deep inside */
+        .card-preview {
+            position: absolute;
+            background: white;
+            width: 90%;
+            height: 90%;
+            left: 5%;
+            top: 50%; /* Starts lower */
+            transform: translateY(-40%); /* Centered vertically relative to envelope body */
+            z-index: 5;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 1s ease-in-out, opacity 0.5s;
+            text-align: center;
+            opacity: 0; /* Hidden until open */
+        }
+
+        /* Pockets (The visible triangles of the envelope body) */
+        .pocket {
+            position: absolute;
+            width: 0; height: 0;
+            z-index: 10;
+        }
+        .pocket-left {
+            border-left: 160px solid #fcfbf9; /* Mobile width/2 */
+            border-top: 110px solid transparent;
+            border-bottom: 110px solid transparent;
+            top: 0; left: 0;
+        }
+        .pocket-right {
+            border-right: 160px solid #fcfbf9;
+            border-top: 110px solid transparent;
+            border-bottom: 110px solid transparent;
+            top: 0; right: 0;
+        }
+        .pocket-bottom {
+            border-bottom: 110px solid var(--envelope-color);
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            bottom: 0; left: 0;
+            z-index: 11;
+        }
+
+        /* Responsive Pockets */
+        @media (min-width: 768px) {
+            .pocket-left { border-left-width: 240px; border-top-width: 160px; border-bottom-width: 160px; }
+            .pocket-right { border-right-width: 240px; border-top-width: 160px; border-bottom-width: 160px; }
+            .pocket-bottom { border-bottom-width: 160px; border-left-width: 240px; border-right-width: 240px; }
+        }
+
+        /* The Flap (Top Triangle) */
+        .flap {
+            position: absolute;
+            top: 0; left: 0;
+            width: 0; height: 0;
+            border-top: 115px solid var(--flap-color); /* Slightly taller to overlap */
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            transform-origin: top;
+            transition: transform 0.8s ease-in-out 0s, z-index 0.2s linear 0.4s; /* z-index changes halfway */
+            z-index: 20;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+        }
+        @media (min-width: 768px) {
+            .flap { border-top-width: 170px; border-left-width: 240px; border-right-width: 240px; }
+        }
+
+        /* Wax Seal */
+        .seal {
+            position: absolute;
+            top: 115px; /* Matches flap height mobile */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px; height: 60px;
+            background: radial-gradient(circle at 30% 30%, #1A4D2E, #0d2b19);
+            border-radius: 50%;
+            z-index: 25;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: black;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transition: opacity 0.4s;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+        @media (min-width: 768px) {
+            .seal { top: 170px; width: 80px; height: 80px; font-size: 28px; }
+        }
+
+        /* Animation Classes */
+        .open .flap {
+            transform: rotateX(180deg);
+            z-index: 1; /* Goes behind everything */
+        }
+        .open .seal {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .open .card-preview {
+            opacity: 1;
+            transform: translateY(-110%); /* Slides UP out of envelope */
+            z-index: 15; /* Above pockets */
+            transition-delay: 0.4s; /* Wait for flap to open */
+        }
+
+        /* --- TIMELINE (RESTORED ELEGANCE) --- */
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: #1A4D2E; /* Green line */
+            transform: translateX(-50%);
+            opacity: 0.3;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 6rem; /* Spaced out */
+            width: 100%;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s ease-out; /* Slow, elegant fade */
+        }
+        .timeline-item.visible { opacity: 1; transform: translateY(0); }
+        
+        /* Alternating Layout */
+        .timeline-content-wrapper {
+            width: 45%;
+        }
+        .timeline-item:nth-child(odd) .timeline-content-wrapper { margin-left: auto; text-align: left; padding-left: 2rem; }
+        .timeline-item:nth-child(even) .timeline-content-wrapper { margin-right: auto; text-align: right; padding-right: 2rem; }
+        
+        /* Central Dot */
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            background: white;
+            border: 2px solid #1A4D2E;
+            border-radius: 50%;
+            z-index: 10;
+        }
+
+        /* Time Display */
+        .timeline-time-display {
+            position: absolute;
+            top: -5px;
+            width: 45%;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #e5e7eb; /* Light gray for elegance */
+            font-weight: bold;
+        }
+        .timeline-item:nth-child(odd) .timeline-time-display { left: 0; text-align: right; padding-right: 2rem; }
+        .timeline-item:nth-child(even) .timeline-time-display { right: 0; text-align: left; padding-left: 2rem; }
+
+        @media (max-width: 768px) {
+            .timeline-line { left: 20px; }
+            .timeline-item { margin-bottom: 4rem; }
+            .timeline-dot { left: 20px; }
+            .timeline-content-wrapper { width: auto; margin-left: 50px !important; text-align: left !important; padding-left: 0 !important; }
+            .timeline-time-display { display: none; } /* Hide big time on mobile */
+            .mobile-time { display: block !important; } /* Show inside content */
+        }
+        .mobile-time { display: none; color: #1A4D2E; font-weight: bold; font-family: 'Playfair Display', serif; margin-bottom: 0.5rem; font-size: 1.2rem; }
+
+        /* --- OTHER STYLES --- */
+        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .playing-animation { animation: pulse-green 2s infinite; }
+        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(26, 77, 46, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(26, 77, 46, 0); } 100% { box-shadow: 0 0 0 0 rgba(26, 77, 46, 0); } }
+        .form-input { width: 100%; background: #F9F7F2; border: 1px solid #e5e7eb; padding: 1rem; outline: none; transition: 0.3s; border-radius: 4px; }
+        .form-input:focus { border-color: #1A4D2E; ring: 1px #1A4D2E; }
+        .custom-checkbox input:checked + div { background-color: #1A4D2E; border-color: #1A4D2E; }
+        .custom-checkbox input:checked + div svg { display: block; }
+    </style>
+</head>
+<body class="bg-[#F9F7F2] text-gray-800 antialiased selection:bg-[#1A4D2E] selection:text-white relative overflow-hidden">
+
+    <!-- === ENVELOPE OVERLAY === -->
+    <div id="envelope-overlay">
+        <div class="envelope-wrapper" id="envelope-wrapper" onclick="openEnvelope()">
+            <div class="envelope">
+                <!-- Flap -->
+                <div class="flap"></div>
+                <!-- Pockets -->
+                <div class="pocket pocket-left"></div>
+                <div class="pocket pocket-right"></div>
+                <div class="pocket pocket-bottom"></div>
+                
+                <!-- Seal -->
+                <div class="seal">R&N</div>
+
+                <!-- Card Inside -->
+                <div class="card-preview">
+                    <p class="serif text-3xl md:text-4xl text-[#1A4D2E] italic">Регина & Николай</p>
+                    <p class="text-xs uppercase mt-2 text-gray-400 tracking-[0.2em]">06.06.2026</p>
+                </div>
+            </div>
+        </div>
+        <!-- HIGH VISIBILITY TEXT -->
+        <p class="text-white text-base md:text-lg mt-16 uppercase tracking-[0.3em] font-bold animate-pulse" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
+            Натиснете плика
+        </p>
+    </div>
+
+    <!-- === AUDIO PLAYER === -->
+    <div class="fixed bottom-6 left-6 z-50 transition-opacity duration-1000 opacity-0" id="music-control">
+        <button id="music-btn" onclick="toggleMusic()" class="bg-[#1A4D2E] text-white p-3 rounded-full shadow-lg hover:bg-[#143d24] transition flex items-center gap-2 playing-animation">
+            <span id="music-icon"><i class="fas fa-volume-up"></i></span>
+        </button>
+        <audio id="bg-music" loop>
+            <source src="https://ia800504.us.archive.org/16/items/DmitriShostakovichWaltzNo.2/Dmitri%20Shostakovich%20-%20Waltz%20No.%202.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <!-- === NAVIGATION === -->
+    <nav class="fixed top-0 w-full z-40 glass shadow-sm transition-all duration-300 opacity-0" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="scrollToTop()">
+                    <span class="serif text-2xl font-bold text-gray-900 border-2 border-gray-900 px-2 py-1">R&N</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <button onclick="navigateTo('section-program')" class="text-gray-600 hover:text-black transition-colors text-xs uppercase tracking-widest font-medium">Програма</button>
+                    <button onclick="navigateTo('section-details')" class="text-gray-600 hover:text-black transition-colors text-xs uppercase tracking-widest font-medium">Детайли</button>
+                    <button onclick="navigateTo('section-rsvp')" class="text-gray-600 hover:text-black transition-colors text-xs uppercase tracking-widest font-bold text-[#1A4D2E]">Потвърждение</button>
+                </div>
+                <div class="flex items-center gap-2">
+                     <button id="mode-toggle" class="bg-gray-900 text-white px-3 py-1 rounded text-[10px] font-bold uppercase tracking-wide hover:bg-gray-700 transition">Dev</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main-content" class="opacity-0 transition-opacity duration-1000">
+        
+        <!-- === HERO SECTION === -->
+        <div id="view-invite">
+            <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative bg-[#F0EBE0]">
+                <div class="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none" style="background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');"></div>
+                
+                <div class="z-10 w-full max-w-5xl mx-auto transform transition-all duration-1000 translate-y-10 flex flex-col items-center" id="hero-content">
+                    <p class="text-xl md:text-2xl uppercase tracking-[0.2em] text-[#1A4D2E] font-bold mb-8 animate-fade-in shadow-sm inline-block px-6 py-2 bg-white/60 rounded-sm">Каним ви на нашата сватба</p>
+                    
+                    <div class="flex flex-col items-center justify-center space-y-2">
+                        <h1 class="serif text-6xl md:text-8xl lg:text-9xl text-gray-900 leading-none">
+                            Регина <span class="italic text-[#1A4D2E] font-light">&</span>
+                        </h1>
+                        <h1 class="serif text-6xl md:text-8xl lg:text-9xl text-gray-900 leading-none mt-4">
+                            Николай
+                        </h1>
+                    </div>
+                    
+                    <div class="flex justify-center items-center gap-4 my-10 w-full">
+                        <div class="h-px w-16 bg-gray-400"></div>
+                        <span class="text-2xl font-serif italic text-gray-600">06.06.2026 година</span>
+                        <div class="h-px w-16 bg-gray-400"></div>
+                    </div>
+
+                    <p class="text-sm uppercase tracking-widest text-gray-500 font-medium">Комплекс "Христови", гр. Севлиево</p>
+                    
+                    <div class="grid gap-8 max-w-md mx-auto mt-12 text-gray-800">
+                        <div class="flex items-center justify-center gap-6">
+                            <div class="text-center">
+                                <span id="count-major" class="serif text-5xl font-bold block">--</span>
+                                <span id="label-major" class="text-xs uppercase tracking-wider text-gray-500">Месеца</span>
+                            </div>
+                            <div class="text-2xl text-gray-300 font-light">|</div>
+                            <div class="text-center">
+                                <span id="count-minor" class="serif text-5xl font-bold block">--</span>
+                                <span id="label-minor" class="text-xs uppercase tracking-wider text-gray-500">Дни</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="absolute bottom-8 animate-bounce cursor-pointer text-[#1A4D2E]" onclick="navigateTo('section-program')">
+                    <i class="fas fa-chevron-down text-2xl"></i>
+                </div>
+            </section>
+
+            <!-- Program Section (RESTORED ELEGANCE) -->
+            <section id="section-program" class="py-32 bg-white overflow-hidden">
+                <div class="max-w-6xl mx-auto px-6 relative">
+                    <div class="text-center mb-24">
+                        <h2 class="serif text-5xl mt-3 text-gray-900 mb-2">Програма на деня</h2>
+                        <p class="text-[#1A4D2E] uppercase tracking-widest text-sm font-bold pb-8">06.06.2026 година</p>
+                        
+                        <div class="inline-block bg-[#F9F7F2] px-8 py-4 border-l-4 border-[#1A4D2E] shadow-sm text-left max-w-xl mx-auto">
+                            <p class="text-sm text-gray-700 italic"><i class="fas fa-info-circle text-[#1A4D2E] mr-2"></i>Гостите са добре дошли след 12:00 часа на деня, за да се настанят в комплекса.</p>
+                        </div>
+                    </div>
+
+                    <div class="relative py-10">
+                        <div class="timeline-line"></div>
+
+                        <!-- 15:00 (Right) -->
+                        <div class="timeline-item flex items-start w-full">
+                            <div class="timeline-time-display">15:00</div>
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content-wrapper">
+                                <div class="mobile-time">15:00</div>
+                                <h3 class="serif text-3xl text-[#1A4D2E]">Взимане на булката</h3>
+                                <p class="text-gray-500 mt-2">Емоционално начало на празника.</p>
+                            </div>
+                        </div>
+
+                        <!-- 16:30 (Left) -->
+                        <div class="timeline-item flex items-start w-full">
+                            <div class="timeline-content-wrapper">
+                                <div class="mobile-time">16:30</div>
+                                <h3 class="serif text-3xl text-[#1A4D2E]">Изнесен ритуал</h3>
+                                <p class="text-gray-500 mt-2">Заветното "Да" под открито небе.</p>
+                            </div>
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-time-display">16:30</div>
+                        </div>
+
+                         <!-- 17:30 (Right) -->
+                         <div class="timeline-item flex items-start w-full">
+                            <div class="timeline-time-display">17:30</div>
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content-wrapper">
+                                <div class="mobile-time">17:30</div>
+                                <h3 class="serif text-3xl text-[#1A4D2E]">Welcome Drink & Фото</h3>
+                                <p class="text-gray-500 mt-2">Наздравици и снимки.</p>
+                            </div>
+                        </div>
+
+                         <!-- 18:30 (Left) -->
+                         <div class="timeline-item flex items-start w-full">
+                            <div class="timeline-content-wrapper">
+                                <div class="mobile-time">18:30</div>
+                                <h3 class="serif text-3xl text-[#1A4D2E]">Настаняване</h3>
+                                <p class="text-gray-500 mt-2">Влизане в ресторанта.</p>
+                            </div>
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-time-display">18:30</div>
+                        </div>
+
+                        <!-- 19:00 (Right) -->
+                         <div class="timeline-item flex items-start w-full">
+                            <div class="timeline-time-display">19:00</div>
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content-wrapper">
+                                <div class="mobile-time">19:00</div>
+                                <h3 class="serif text-3xl text-[#1A4D2E]">Парти!</h3>
+                                <p class="text-gray-500 mt-2">Захранване и начало на купона.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- Details Section -->
+            <section id="section-details" class="py-24 bg-[#F9F7F2]">
+                <div class="max-w-6xl mx-auto px-6">
+                    <div class="text-center mb-16">
+                        <h2 class="serif text-4xl mb-4 text-gray-900">Важна Информация</h2>
+                        <div class="h-px w-16 bg-gray-300 mx-auto"></div>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <!-- Location -->
+                        <div class="bg-white p-10 rounded-sm shadow-sm hover:shadow-lg transition-all duration-300 text-center border-t-4 border-[#1A4D2E]">
+                            <div class="text-3xl mb-4 text-[#1A4D2E]"><i class="fas fa-map-marker-alt"></i></div>
+                            <h3 class="serif text-xl mb-4 font-bold">Локация</h3>
+                            <p class="font-bold text-gray-800 mb-2">Комплекс "Христови"</p>
+                            <p class="text-gray-600 text-sm mb-6">гр. Севлиево<br>Ритуалът и тържеството са на едно място.</p>
+                            <a href="https://maps.google.com/?q=Complex+Hristovi+Sevlievo" target="_blank" class="text-xs uppercase font-bold border-b border-gray-300 pb-1 hover:border-[#1A4D2E] hover:text-[#1A4D2E] transition">Навигация</a>
+                        </div>
+
+                        <!-- Dress Code -->
+                        <div class="bg-white p-10 rounded-sm shadow-sm hover:shadow-lg transition-all duration-300 text-center border-t-4 border-[#1A4D2E]">
+                            <div class="text-3xl mb-4 text-[#1A4D2E]"><i class="fas fa-tshirt"></i></div>
+                            <h3 class="serif text-xl mb-4 font-bold">Дрес Код: Cocktail Formal</h3>
+                            <p class="text-gray-600 text-xs italic mb-4 leading-relaxed">Елегантна визия, баланс между официално и парти облекло. Коктейлни рокли и костюми.</p>
+                            <p class="text-red-800/70 font-bold text-xs mb-4 uppercase tracking-wide border border-red-100 bg-red-50 py-2">⚠️ Молим да не носите жълто</p>
+                            <div class="flex justify-center gap-3 mt-4">
+                                <div class="w-6 h-6 rounded-full bg-black border border-gray-200" title="Black"></div>
+                                <div class="w-6 h-6 rounded-full bg-[#1A4D2E] border border-gray-200" title="Dark Green"></div>
+                                <div class="w-6 h-6 rounded-full bg-[#808080] border border-gray-200" title="Grey"></div>
+                                <div class="w-6 h-6 rounded-full bg-[#F5F5DC] border border-gray-300" title="Milky White"></div>
+                            </div>
+                        </div>
+
+                         <!-- No Flowers Policy -->
+                         <div class="bg-white p-10 rounded-sm shadow-sm hover:shadow-lg transition-all duration-300 text-center border-t-4 border-[#1A4D2E]">
+                            <div class="text-3xl mb-4 text-[#1A4D2E]"><i class="fas fa-leaf"></i></div>
+                            <h3 class="serif text-xl mb-4 font-bold">Молба: Без Цветя</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed italic">
+                                "Вашето присъствие е най-големият подарък за нас! Тъй като сме осигурили красива цветна украса за празника, ще бъдем признателни, ако замените букетите с подкрепа за нашето бъдеще към подаръка ви. Нека запазим красотата на живите цветя в природата."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RSVP Section -->
+            <section id="section-rsvp" class="py-24 bg-white relative border-t border-gray-100">
+                <div class="max-w-xl mx-auto px-6 text-center">
+                    <h2 class="serif text-4xl mb-4 text-gray-900">Очакваме Ви!</h2>
+                    <p class="text-gray-600 mb-8">Краен срок за потвърждение: <br><strong>1-ви Април 2026 година</strong></p>
+                    
+                    <form id="rsvp-form" class="space-y-6 text-left bg-[#F9F7F2] p-8 rounded shadow-inner">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Брой Гости (възрастни)</label>
+                            <select id="guest-count" onchange="generateNameFields()" class="form-input">
+                                <option value="1">1 Човек</option>
+                                <option value="2">2 Души</option>
+                                <option value="3">3 Души</option>
+                                <option value="4">4 Души</option>
+                                <option value="5">5 Души</option>
+                            </select>
+                        </div>
+                        <div id="names-container" class="space-y-3">
+                            <div><label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Име на гост 1</label><input type="text" class="form-input guest-name-input" placeholder="Име и Фамилия" required></div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Потвърждение</label>
+                            <select id="attendance-select" class="form-input" required>
+                                <option value="yes">С радост ще присъстваме! 🥂</option>
+                                <option value="no">За съжаление не можем 😞</option>
+                            </select>
+                        </div>
+
+                        <!-- Menu (Vegan -> Vegetarian) -->
+                        <div id="meal-preference" class="transition-all duration-300">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Предпочитание за меню</label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <button type="button" class="meal-btn p-3 rounded-md border border-gray-200 text-sm bg-white hover:bg-[#1A4D2E] hover:text-white transition" onclick="selectMeal(this, 'meat')">🥩 Месно</button>
+                                <button type="button" class="meal-btn p-3 rounded-md border border-gray-200 text-sm bg-white hover:bg-[#1A4D2E] hover:text-white transition" onclick="selectMeal(this, 'veg')">🥗 Вегетарианско</button>
+                            </div>
+                        </div>
+
+                        <!-- Allergies -->
+                        <div class="mt-4">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Хранителни Алергии</label>
+                            <div class="grid grid-cols-2 gap-3 mb-3">
+                                <label class="custom-checkbox flex items-center cursor-pointer space-x-2"><input type="checkbox" value="Глутен" class="hidden allergy-check"><div class="w-5 h-5 flex items-center justify-center border border-gray-300 rounded bg-white transition-colors"><svg class="w-3 h-3 text-white hidden pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div><span class="text-sm text-gray-600">Глутен</span></label>
+                                <label class="custom-checkbox flex items-center cursor-pointer space-x-2"><input type="checkbox" value="Лактоза" class="hidden allergy-check"><div class="w-5 h-5 flex items-center justify-center border border-gray-300 rounded bg-white transition-colors"><svg class="w-3 h-3 text-white hidden pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div><span class="text-sm text-gray-600">Лактоза</span></label>
+                                <label class="custom-checkbox flex items-center cursor-pointer space-x-2"><input type="checkbox" value="Ядки" class="hidden allergy-check"><div class="w-5 h-5 flex items-center justify-center border border-gray-300 rounded bg-white transition-colors"><svg class="w-3 h-3 text-white hidden pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div><span class="text-sm text-gray-600">Ядки</span></label>
+                                <label class="custom-checkbox flex items-center cursor-pointer space-x-2"><input type="checkbox" value="Морски" class="hidden allergy-check"><div class="w-5 h-5 flex items-center justify-center border border-gray-300 rounded bg-white transition-colors"><svg class="w-3 h-3 text-white hidden pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div><span class="text-sm text-gray-600">Морски дарове</span></label>
+                            </div>
+                            <input type="text" id="allergy-other" class="form-input text-sm" placeholder="Други (моля уточнете)...">
+                        </div>
+                        
+                        <div id="wishes-section">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-[#1A4D2E] mb-2">Пожелания към младоженците</label>
+                            <textarea id="guest-message" class="w-full bg-white border border-gray-300 rounded-md p-4 focus:ring-2 focus:ring-[#1A4D2E] outline-none transition h-32 text-sm" placeholder="Вашето съобщение тук..."></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-[#1A4D2E] text-white font-bold uppercase tracking-widest py-4 rounded hover:bg-[#143d24] transition duration-300 shadow-lg mt-4">Изпрати Потвърждение</button>
+                    </form>
+
+                    <div id="rsvp-success" class="hidden mt-8 p-6 bg-white border border-[#1A4D2E] rounded-lg">
+                        <h3 class="serif text-2xl mb-2 text-[#1A4D2E]">Благодарим ви!</h3>
+                        <p class="text-sm text-gray-600">Вашият отговор беше подготвен за изпращане.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- === AI CHAT === -->
+        <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2" id="ai-widget-container">
+            <div id="ai-chat-window" class="hidden w-80 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden flex flex-col transition-all duration-300 origin-bottom-right mb-2">
+                <div class="bg-[#1A4D2E] p-4 text-white flex justify-between items-center"><div><h4 class="font-bold text-sm">Сватбен Асистент</h4></div><button onclick="toggleChat()" class="text-white hover:text-gray-300">✕</button></div>
+                <div id="chat-messages" class="h-64 p-4 overflow-y-auto bg-gray-50 space-y-3 text-sm"><div class="bg-white p-3 rounded-lg rounded-tl-none shadow-sm border border-gray-100 self-start max-w-[90%]">Здравейте! Имате ли въпроси?</div></div>
+                <div class="p-3 bg-white border-t border-gray-100"><form onsubmit="handleChatSubmit(event)" class="flex gap-2"><input type="text" id="chat-input" class="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A4D2E]" placeholder="Въпрос..."><button type="submit" class="bg-[#1A4D2E] text-white p-2 rounded-full w-9 h-9 flex items-center justify-center hover:bg-[#143d24] transition">➜</button></form></div>
+            </div>
+            <button onclick="toggleChat()" class="bg-white text-gray-800 p-4 rounded-full shadow-lg border border-gray-200 hover:shadow-xl hover:scale-105 transition flex items-center gap-2 group"><span class="text-2xl">🤖</span></button>
+        </div>
+
+        <!-- === DEV MODE === -->
+        <div id="view-report" class="hidden bg-gray-900 min-h-screen text-gray-300 p-6 md:p-12"><div class="max-w-7xl mx-auto"><h2 class="text-3xl font-mono text-white mb-8">🔧 Admin Dashboard</h2><div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div class="bg-gray-800 p-6 rounded-lg border border-gray-700"><h3 class="text-xl font-bold text-white mb-4 font-mono">RSVP Status</h3><div class="h-64"><canvas id="rsvpChart"></canvas></div></div><div class="bg-gray-800 p-6 rounded-lg border border-gray-700"><h3 class="text-xl font-bold text-white mb-4 font-mono">💍 AI Vow Writer</h3><input type="text" id="vow-topic" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm text-white mb-2" placeholder="Topic..."><button onclick="generateVows()" class="w-full bg-[#1A4D2E] text-white font-bold py-2 rounded">Generate</button><div id="vow-output" class="mt-4 text-sm italic text-gray-400">Result here...</div></div></div></div></div>
+
+    </main>
+
+    <footer class="bg-[#1A4D2E] text-white py-12 text-center" id="footer">
+        <h2 class="serif text-4xl mb-4">Регина & Николай</h2>
+        <p class="text-sm text-gray-300 uppercase tracking-widest mb-8">06.06.2026 • Севлиево</p>
+    </footer>
+
+    <script>
+        // === ENVELOPE LOGIC (FIXED) ===
+        function openEnvelope() {
+            const wrapper = document.getElementById('envelope-wrapper');
+            const overlay = document.getElementById('envelope-overlay');
+            const mainContent = document.getElementById('main-content');
+            const musicControl = document.getElementById('music-control');
+            const navbar = document.getElementById('navbar');
+            const heroContent = document.getElementById('hero-content');
+            
+            wrapper.classList.add('open');
+            
+            // Audio (Bound to click)
+            const music = document.getElementById('bg-music');
+            music.volume = 0.6;
+            music.play().then(()=>console.log("Audio playing")).catch(e=>console.log("Audio blocked", e));
+
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    document.body.style.overflowY = 'auto';
+                    mainContent.style.opacity = '1';
+                    musicControl.style.opacity = '1';
+                    navbar.style.opacity = '1';
+                    heroContent.style.transform = 'translateY(0)';
+                    checkTimelineScroll();
+                }, 1200);
+            }, 1000);
+        }
+
+        // Timeline Scroll
+        window.addEventListener('scroll', checkTimelineScroll);
+        function checkTimelineScroll() {
+            const items = document.querySelectorAll('.timeline-item');
+            const triggerBottom = window.innerHeight / 5 * 4;
+            items.forEach(item => { if(item.getBoundingClientRect().top < triggerBottom) item.classList.add('visible'); });
+        }
+
+        // Form Logic
+        function generateNameFields() {
+            const count = document.getElementById('guest-count').value;
+            const container = document.getElementById('names-container');
+            container.innerHTML = '';
+            for (let i = 1; i <= count; i++) {
+                container.innerHTML += `<div><label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Име на гост ${i}</label><input type="text" class="form-input guest-name-input" placeholder="Име и Фамилия" required></div>`;
+            }
+        }
+
+        let selectedMeal = '';
+        function selectMeal(btn, type) {
+            document.querySelectorAll('.meal-btn').forEach(b => { b.classList.remove('bg-[#1A4D2E]', 'text-white'); b.classList.add('bg-white', 'text-gray-800'); });
+            btn.classList.remove('bg-white', 'text-gray-800'); btn.classList.add('bg-[#1A4D2E]', 'text-white');
+            if(type === 'meat') selectedMeal = "Месно"; if(type === 'veg') selectedMeal = "Вегетарианско";
+        }
+
+        document.getElementById('rsvp-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const count = document.getElementById('guest-count').value;
+            const att = document.getElementById('attendance-select').value;
+            const msg = document.getElementById('guest-message').value;
+            let names = []; document.querySelectorAll('.guest-name-input').forEach(i => names.push(i.value));
+            let allergies = []; document.querySelectorAll('.allergy-check:checked').forEach(c => allergies.push(c.value));
+            const other = document.getElementById('allergy-other').value; if(other) allergies.push(other);
+            
+            const subject = `RSVP: ${names[0]} (${att === 'yes' ? 'DA' : 'NE'})`;
+            const body = `Гости: ${count}\nИмена: ${names.join(', ')}\nСтатус: ${att === 'yes' ? 'ЩЕ ПРИСЪСТВАТ' : 'НЯМА ДА ПРИСЪСТВАТ'}\nМеню: ${selectedMeal || 'Не е избрано'}\nАлергии: ${allergies.join(', ') || 'Няма'}\n\nСъобщение:\n${msg}`;
+            
+            window.location.href = `mailto:nikolai.nikolaev11@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            this.style.display = 'none'; document.getElementById('rsvp-success').classList.remove('hidden');
+            updateChartsWithNewData(att);
+        });
+
+        // Timer
+        const weddingDate = new Date("Jun 06, 2026 15:00:00").getTime();
+        function updateTimer() {
+            const now = new Date().getTime(); const d = weddingDate - now;
+            const daysTotal = Math.floor(d / (1000 * 60 * 60 * 24));
+            if (daysTotal > 30) {
+                document.getElementById('count-major').innerText = Math.floor(daysTotal / 30.44);
+                document.getElementById('count-minor').innerText = Math.floor(daysTotal % 30.44);
+                document.getElementById('label-major').innerText = "Месеца"; document.getElementById('label-minor').innerText = "Дни";
+            } else {
+                document.getElementById('count-major').innerText = daysTotal;
+                document.getElementById('count-minor').innerText = Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                document.getElementById('label-major').innerText = "Дни"; document.getElementById('label-minor').innerText = "Часа";
+            }
+        }
+        setInterval(updateTimer, 1000); updateTimer();
+
+        // Music
+        let isPlaying = true;
+        function toggleMusic() {
+            const m = document.getElementById('bg-music'); const b = document.getElementById('music-btn');
+            if (isPlaying) { m.pause(); b.classList.remove('playing-animation'); b.innerHTML = '<i class="fas fa-volume-mute"></i>'; }
+            else { m.play(); b.classList.add('playing-animation'); b.innerHTML = '<i class="fas fa-volume-up"></i>'; }
+            isPlaying = !isPlaying;
+        }
+
+        // Nav & Logic
+        function navigateTo(id) { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 80, behavior: "smooth" }); }
+        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+        const apiKey = ""; 
+        const modeToggle = document.getElementById('mode-toggle'); const viewInvite = document.getElementById('view-invite'); const viewReport = document.getElementById('view-report');
+        let isDevMode = false;
+        modeToggle.addEventListener('click', () => {
+            isDevMode = !isDevMode;
+            if(isDevMode) { viewInvite.classList.add('hidden'); document.getElementById('footer').classList.add('hidden'); viewReport.classList.remove('hidden'); modeToggle.classList.add('bg-[#1A4D2E]'); renderCharts(); }
+            else { viewReport.classList.add('hidden'); document.getElementById('footer').classList.remove('hidden'); viewInvite.classList.remove('hidden'); modeToggle.classList.remove('bg-[#1A4D2E]'); }
+        });
+
+        // Gemini & Charts
+        async function callGemini(p, s="") { const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({contents:[{parts:[{text:p}]}], systemInstruction:{parts:[{text:s}]}})}); const d = await r.json(); return d.candidates[0].content.parts[0].text; }
+        function toggleChat() { document.getElementById('ai-chat-window').classList.toggle('hidden'); }
+        async function handleChatSubmit(e) { e.preventDefault(); const i = document.getElementById('chat-input'); const c = document.getElementById('chat-messages'); const q = i.value.trim(); if(!q) return; c.innerHTML+=`<div class="bg-[#1A4D2E] text-white p-3 rounded-lg self-end max-w-[90%] text-right">${q}</div>`; i.value=""; const ans = await callGemini(q, "Wedding assistant. 06.06.2026. Sevlievo."); c.innerHTML+=`<div class="bg-white p-3 rounded-lg self-start max-w-[90%] border">${ans}</div>`; }
+        async function generateVows() { const t = document.getElementById('vow-topic').value; const r = await callGemini(`Wedding vow: ${t}`, "Language: Bulgarian"); document.getElementById('vow-output').innerText = r; }
+        let rsvpChartInstance = null;
+        function renderCharts() { if(rsvpChartInstance) return; rsvpChartInstance = new Chart(document.getElementById('rsvpChart'), {type:'bar', data:{labels:['Yes','No'], datasets:[{label:'Guests',data:[0,0],backgroundColor:'#1A4D2E'}]}, options:{responsive:true,maintainAspectRatio:false}}); }
+        function updateChartsWithNewData(a) { if(!rsvpChartInstance) return; if(a==='yes') rsvpChartInstance.data.datasets[0].data[0]++; else rsvpChartInstance.data.datasets[0].data[1]++; rsvpChartInstance.update(); }
+    </script>
+</body>
+</html>
