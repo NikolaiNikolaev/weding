@@ -616,21 +616,68 @@
             if(type === 'meat') selectedMeal = "Месно"; if(type === 'veg') selectedMeal = "Вегетарианско";
         }
 
+        // === FORMSPREE INTEGRATION ===
         document.getElementById('rsvp-form').addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            // ВАЖНО: Сложи тук твоя линк от Formspree
+            const formspreeEndpoint = "https://formspree.io/f/mqepbrwv";
+
             const count = document.getElementById('guest-count').value;
             const att = document.getElementById('attendance-select').value;
             const msg = document.getElementById('guest-message').value;
-            let names = []; document.querySelectorAll('.guest-name-input').forEach(i => names.push(i.value));
-            let allergies = []; document.querySelectorAll('.allergy-check:checked').forEach(c => allergies.push(c.value));
-            const other = document.getElementById('allergy-other').value; if(other) allergies.push(other);
             
-            const subject = `RSVP: ${names[0]} (${att === 'yes' ? 'DA' : 'NE'})`;
-            const body = `Гости: ${count}\nИмена: ${names.join(', ')}\nСтатус: ${att === 'yes' ? 'ЩЕ ПРИСЪСТВАТ' : 'НЯМА ДА ПРИСЪСТВАТ'}\nМеню: ${selectedMeal || 'Не е избрано'}\nАлергии: ${allergies.join(', ') || 'Няма'}\n\nСъобщение:\n${msg}`;
+            // Събиране на имена
+            let names = []; 
+            document.querySelectorAll('.guest-name-input').forEach(i => names.push(i.value));
             
-            window.location.href = `mailto:nikolai.nikolaev11@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            this.style.display = 'none'; document.getElementById('rsvp-success').classList.remove('hidden');
-            updateChartsWithNewData(att);
+            // Събиране на алергии
+            let allergies = []; 
+            document.querySelectorAll('.allergy-check:checked').forEach(c => allergies.push(c.value));
+            const other = document.getElementById('allergy-other').value; 
+            if(other) allergies.push(other);
+            
+            const btn = this.querySelector('button[type="submit"]');
+            const originalBtnText = btn.innerText;
+            btn.innerText = "Изпращане...";
+            btn.disabled = true;
+
+            // Подготовка на данните за Formspree
+            const data = {
+                "Статус": att === 'yes' ? 'ЩЕ ПРИСЪСТВАТ' : 'НЯМА ДА ПРИСЪСТВАТ',
+                "Брой гости": count,
+                "Имена": names.join(', '),
+                "Меню": selectedMeal || 'Не е избрано',
+                "Алергии": allergies.join(', ') || 'Няма',
+                "Пожелание": msg
+            };
+
+            // Изпращане към Formspree
+            fetch(formspreeEndpoint, {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Успешно изпращане
+                    document.getElementById('rsvp-form').style.display = 'none';
+                    document.getElementById('rsvp-success').classList.remove('hidden');
+                    updateChartsWithNewData(att);
+                } else {
+                    alert("Възникна грешка при изпращането. Моля опитайте отново.");
+                    btn.innerText = originalBtnText;
+                    btn.disabled = false;
+                }
+            })
+            .catch(error => {
+                alert("Възникна грешка при свързването.");
+                btn.innerText = originalBtnText;
+                btn.disabled = false;
+            });
         });
 
         // Timer
