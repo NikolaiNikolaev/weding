@@ -722,7 +722,94 @@
         // Gemini & Charts
         async function callGemini(p, s="") { const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({contents:[{parts:[{text:p}]}], systemInstruction:{parts:[{text:s}]}})}); const d = await r.json(); return d.candidates[0].content.parts[0].text; }
         function toggleChat() { document.getElementById('ai-chat-window').classList.toggle('hidden'); }
-        async function handleChatSubmit(e) { e.preventDefault(); const i = document.getElementById('chat-input'); const c = document.getElementById('chat-messages'); const q = i.value.trim(); if(!q) return; c.innerHTML+=`<div class="bg-[#1A4D2E] text-white p-3 rounded-lg self-end max-w-[90%] text-right">${q}</div>`; i.value=""; const ans = await callGemini(q, "Wedding assistant. 06.06.2026. Sevlievo."); c.innerHTML+=`<div class="bg-white p-3 rounded-lg self-start max-w-[90%] border">${ans}</div>`; }
+        // === AI CHAT LOGIC (SMART CONTEXT) ===
+        async function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const container = document.getElementById('chat-messages');
+            const question = input.value.trim();
+            
+            if (!question) return;
+
+            // 1. Показване на въпроса на потребителя
+            container.innerHTML += `
+                <div class="flex justify-end mb-2">
+                    <div class="bg-[#1A4D2E] text-white p-3 rounded-lg rounded-tr-none shadow-sm max-w-[85%] text-right text-sm">
+                        ${question}
+                    </div>
+                </div>`;
+            input.value = "";
+            container.scrollTop = container.scrollHeight;
+
+            // 2. Индикатор, че пише...
+            const loadingId = "loading-" + Date.now();
+            container.innerHTML += `
+                <div id="${loadingId}" class="flex justify-start mb-2">
+                    <div class="bg-gray-100 text-gray-500 p-3 rounded-lg rounded-tl-none text-xs italic">
+                        Пише...
+                    </div>
+                </div>`;
+            container.scrollTop = container.scrollHeight;
+
+            // 3. БАЗА ОТ ЗНАНИЯ (КОНТЕКСТ)
+            // Тук описваме всичко от поканата, за да го знае бота
+            const weddingContext = `
+                ТИ СИ: Любезен и интелигентен сватбен асистент за сватбата на Регина и Николай.
+                ЦЕЛ: Да отговаряш на въпроси на гостите, използвайки САМО предоставената по-долу информация.
+
+                --- ИНФОРМАЦИЯ ЗА СЪБИТИЕТО ---
+                ДАТА: 06.06.2026 година (6-ти юни 2026).
+                ЛОКАЦИЯ: Комплекс "Христови", гр. Севлиево. (Ритуалът и тържеството са на едно място).
+                НАСТАНЯВАНЕ: Гостите са добре дошли в комплекса след 12:00 часа на обяд, за да се настанят спокойно.
+                
+                ПРОГРАМА НА ДЕНЯ:
+                - 15:00 ч. - Взимане на булката (емоционално начало).
+                - 16:30 ч. - Изнесен ритуал (заветното "Да" под открито небе).
+                - 17:30 ч. - Welcome Drink и Фотосесия с младоженците.
+                - 18:30 ч. - Настаняване в ресторанта.
+                - 19:00 ч. - Парти, захранване и начало на купона.
+
+                ДРЕС КОД (ОБЛЕКЛО):
+                - Тип: Cocktail Formal.
+                - Описание: Елегантно облекло. Коктейлни рокли за дамите, костюми за господата.
+                - ВАЖНО ОГРАНИЧЕНИЕ: Молим гостите да НЕ носят ЖЪЛТО (това е запазен цвят или лична молба).
+                - Цветова палитра на сватбата: Черно, Тъмно зелено, Сиво, Млечно бяло.
+
+                ПОДАРЪЦИ И ЦВЕТЯ:
+                - ЦВЕТЯ: Молим без букети от рязан цвят. Имаме осигурена богата цветна декорация и не искаме да увяхват напразно.
+                - ПОДАРЪЦИ: Вместо цветя, гостите могат да добавят сумата към подаръка си (подкрепа за бъдещето на семейството).
+
+                RSVP (ПОТВЪРЖДЕНИЕ):
+                - Краен срок: 1-ви Април 2026 година.
+                - Начин: Чрез формата в сайта.
+                - Меню: Предлагаме Месно и Вегетарианско меню. Има опция за отбелязване на алергии.
+
+                КОНТАКТИ:
+                - Младоженци: Регина и Николай.
+                - Имейл за въпроси: nikolai.nikolaev11@gmail.com
+
+                --- ИНСТРУКЦИИ ЗА ОТГОВОР ---
+                1. Ако въпросът е за час, място, дрес код или подаръци -> отговори директно с горната информация.
+                2. Ако питат "Какво да облека?" -> кажи за Cocktail Formal и задължително спомени забраната за жълто.
+                3. Ако питат за цветя -> обясни учтиво молбата да не се носят.
+                4. Ако въпросът е страничен (напр. "Какво е времето?"), отговори учтиво, но свържи отговора със сватбата (напр. "Надяваме се на слънчево време за ритуала на открито").
+                5. Говори на български език, учтиво и приповдигнато.
+            `;
+
+            // 4. Изпращане към Google Gemini
+            const answer = await callGemini(question, weddingContext);
+
+            // 5. Премахване на "Пише..." и показване на отговора
+            document.getElementById(loadingId).remove();
+            
+            container.innerHTML += `
+                <div class="flex justify-start mb-2">
+                    <div class="bg-white border border-gray-200 text-gray-800 p-3 rounded-lg rounded-tl-none shadow-sm max-w-[90%] text-sm leading-relaxed">
+                        ${answer}
+                    </div>
+                </div>`;
+            container.scrollTop = container.scrollHeight;
+        }
         async function generateVows() { const t = document.getElementById('vow-topic').value; const r = await callGemini(`Wedding vow: ${t}`, "Language: Bulgarian"); document.getElementById('vow-output').innerText = r; }
         let rsvpChartInstance = null;
         function renderCharts() { if(rsvpChartInstance) return; rsvpChartInstance = new Chart(document.getElementById('rsvpChart'), {type:'bar', data:{labels:['Yes','No'], datasets:[{label:'Guests',data:[0,0],backgroundColor:'#1A4D2E'}]}, options:{responsive:true,maintainAspectRatio:false}}); }
