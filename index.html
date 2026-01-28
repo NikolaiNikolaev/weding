@@ -14,6 +14,36 @@
         body { font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
         h1, h2, h3, .serif { font-family: 'Playfair Display', serif; }
         html { scroll-behavior: smooth; }
+
+/* НОВО: Ефект за плавно появяване на снимката */
+        .fade-in-element {
+            opacity: 0;
+            transform: translateY(30px); /* Леко изместване надолу */
+            transition: opacity 1.5s ease-out, transform 1.5s ease-out; /* Бавна анимация */
+        }
+        .fade-in-element.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* НОВО: Винтидж ефект (избледняващи ръбове) */
+        .vintage-container {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+            width: 100%;
+            border-radius: 2px;
+        }
+        /* Сянката, която прелива към цвета на фона */
+        .vintage-container::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            /* Силна вътрешна сянка с цвета на фона (#F9F7F2) */
+            box-shadow: inset 0 0 60px 30px #F9F7F2; 
+            pointer-events: none;
+            z-index: 10;
+        }
         
         /* Цветова Палитра */
         :root {
@@ -363,9 +393,11 @@
                 <div class="relative w-full max-w-4xl shadow-2xl mx-4">
                     
                     <!-- Background Image: paper.jpg (Uploaded by you) -->
-                    <img src="paper.jpg" 
-                         alt="Hand writing on scroll" 
-                         class="w-full h-80 md:h-[500px] object-cover rounded-sm">
+                    <div class="vintage-container fade-in-element">
+                        <img src="paper.jpg" 
+                             alt="Hand writing on scroll" 
+                             class="w-full h-80 md:h-[500px] object-cover rounded-sm relative z-0">
+                    </div>
                     
                     <!-- Text Overlay -->
                     <!-- Изместваме текста наляво (pr-32), за да не е върху ръката -->
@@ -619,10 +651,15 @@
 
         // Timeline Scroll
         window.addEventListener('scroll', checkTimelineScroll);
+        // Промяна: Следим и timeline-item, и новия fade-in-element
         function checkTimelineScroll() {
-            const items = document.querySelectorAll('.timeline-item');
+            const items = document.querySelectorAll('.timeline-item, .fade-in-element');
             const triggerBottom = window.innerHeight / 5 * 4;
-            items.forEach(item => { if(item.getBoundingClientRect().top < triggerBottom) item.classList.add('visible'); });
+            items.forEach(item => { 
+                if(item.getBoundingClientRect().top < triggerBottom) {
+                    item.classList.add('visible'); 
+                }
+            });
         }
 
         // Form Logic
