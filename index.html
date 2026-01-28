@@ -358,22 +358,23 @@
                 </div>
             </section>
 
-            <!-- === VINTAGE LETTER SECTION === -->
+<!-- === VINTAGE LETTER SECTION (CORRECTED CODE) === -->
             <section id="section-quote" class="py-16 bg-[#F9F7F2] flex justify-center overflow-hidden">
                 <div class="relative w-full max-w-4xl shadow-2xl mx-4">
                     
-                    <!-- Background Image: Hand writing on paper -->
-                    <img src="https://images.unsplash.com/photo-1516962215378-7fa2e137ae91?q=80&w=2070&auto=format&fit=crop" 
-                         alt="Writing a letter" 
-                         class="w-full h-64 md:h-96 object-cover rounded-sm brightness-75">
+                    <!-- Background Image: paper.jpg (Uploaded by you) -->
+                    <img src="paper.jpg" 
+                         alt="Hand writing on scroll" 
+                         class="w-full h-80 md:h-[500px] object-cover rounded-sm">
                     
                     <!-- Text Overlay -->
-                    <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-                        <p class="serif text-3xl md:text-5xl text-white italic drop-shadow-lg mb-4 leading-snug" 
-                           style="text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">
+                    <!-- Изместваме текста наляво (pr-32), за да не е върху ръката -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pt-12 pr-12 md:pr-48 pl-12 pb-4 text-center">
+                        <p class="serif text-2xl md:text-4xl text-[#3E2723] italic leading-relaxed opacity-90 transform -rotate-1" 
+                           style="text-shadow: none;">
                             "Любовта е единственото нещо,<br>което расте, когато се споделя."
                         </p>
-                        <p class="text-white/90 text-xs md:text-sm uppercase tracking-[0.2em] font-bold mt-2 shadow-sm">
+                        <p class="text-[#3E2723] text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold mt-4 opacity-75 transform -rotate-1">
                             Антоан дьо Сент-Екзюпери
                         </p>
                     </div>
