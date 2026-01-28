@@ -547,7 +547,10 @@
                 <div id="chat-messages" class="h-64 p-4 overflow-y-auto bg-gray-50 space-y-3 text-sm"><div class="bg-white p-3 rounded-lg rounded-tl-none shadow-sm border border-gray-100 self-start max-w-[90%]">Здравейте! Имате ли въпроси?</div></div>
                 <div class="p-3 bg-white border-t border-gray-100"><form onsubmit="handleChatSubmit(event)" class="flex gap-2"><input type="text" id="chat-input" class="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A4D2E]" placeholder="Въпрос..."><button type="submit" class="bg-[#1A4D2E] text-white p-2 rounded-full w-9 h-9 flex items-center justify-center hover:bg-[#143d24] transition">➜</button></form></div>
             </div>
-            <button onclick="toggleChat()" class="bg-white text-gray-800 p-4 rounded-full shadow-lg border border-gray-200 hover:shadow-xl hover:scale-105 transition flex items-center gap-2 group"><span class="text-2xl">🤖</span></button>
+            <!-- CONCIERGE TEXT BUTTON -->
+            <button onclick="toggleChat()" class="bg-white text-[#1A4D2E] px-6 py-4 rounded-full shadow-lg border border-[#1A4D2E]/20 hover:shadow-xl hover:scale-105 transition flex items-center gap-2 group">
+                <span class="serif font-bold tracking-wide">Сватбен Консиерж</span>
+            </button>
         </div>
 
         <!-- === DEV MODE === -->
