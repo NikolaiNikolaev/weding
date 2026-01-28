@@ -39,8 +39,8 @@
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            /* Силна вътрешна сянка с цвета на фона (#F9F7F2) */
-            box-shadow: inset 0 0 60px 30px #F9F7F2; 
+            /* Силна вътрешна сянка с бежов цвят от твоята снимка - #F2E8D5 */
+           box-shadow: inset 0 0 80px 40px #F2E8D5;
             pointer-events: none;
             z-index: 10;
         }
@@ -393,19 +393,22 @@
             </section>
 
 <!-- === VINTAGE LETTER SECTION (CORRECTED CODE) === -->
-            <section id="section-quote" class="w-full bg-[#F9F7F2] overflow-hidden">
-                <div class="relative w-full vintage-container fade-in-element">
+            <section id="section-quote" class="py-16 bg-[#F9F7F2] flex justify-center overflow-hidden">
+                
+                <div class="relative w-full max-w-6xl mx-4 vintage-container fade-in-element shadow-2xl">
                     
                     <img src="paper.jpg" 
                          alt="Hand writing on scroll" 
-                         class="w-full h-[600px] md:h-[90vh] object-cover relative z-0">
+                         class="w-full h-[450px] md:h-[650px] object-cover rounded-sm relative z-0">
                     
-                    <div class="absolute inset-0 flex flex-col items-center justify-center pt-12 pr-12 md:pr-48 pl-12 pb-4 text-center z-10">
-                        <p class="serif text-[22px] md:text-5xl text-[#3E2723] italic leading-relaxed opacity-90 transform -rotate-1" 
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pt-10 pr-10 md:pr-32 pl-10 pb-4 text-center z-10">
+                        
+                        <p class="serif text-xl md:text-4xl text-[#3E2723] italic leading-relaxed opacity-90 transform -rotate-1" 
                            style="text-shadow: none;">
                             "Любовта е единственото нещо,<br>което расте, когато се споделя."
                         </p>
-                        <p class="text-[#3E2723] text-[8px] md:text-sm uppercase tracking-[0.2em] font-bold mt-8 opacity-75 transform -rotate-1">
+                        
+                        <p class="text-[#3E2723] text-[9px] md:text-xs uppercase tracking-[0.2em] font-bold mt-6 opacity-75 transform -rotate-1">
                             Антоан дьо Сент-Екзюпери
                         </p>
                     </div>
