@@ -387,7 +387,7 @@
                     </div>
                 </div>
 
-                <div class="absolute bottom-1 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer text-[#1A4D2E] z-30" onclick="navigateTo('section-quote')">
+                <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer text-[#1A4D2E] z-30" onclick="navigateTo('section-quote')">
                     <i class="fas fa-chevron-down text-2xl"></i>
                 </div>
                 
@@ -633,16 +633,24 @@
             const wrapper = document.getElementById('envelope-wrapper');
             const overlay = document.getElementById('envelope-overlay');
             const mainContent = document.getElementById('main-content');
-            const musicControl = document.getElementById('music-control');
+            const musicControl = document.getElementById('music-control'); // Важно!
             const navbar = document.getElementById('navbar');
             const heroContent = document.getElementById('hero-content');
             
             wrapper.classList.add('open');
             
-            // Audio (Bound to click)
+            // --- ТУК Е КЛЮЧЪТ ЗА МУЗИКАТА ---
+            // Намираме елемента и му даваме команда "Свири!" веднага при клика
             const music = document.getElementById('bg-music');
-            music.volume = 0.6;
-            music.play().then(()=>console.log("Audio playing")).catch(e=>console.log("Audio blocked", e));
+            music.volume = 0.5; // Сила на звука (0.5 е 50%)
+            
+            // Този ред стартира песента song.mp3
+            music.play().then(() => {
+                console.log("Muzikata startira uspeshno");
+            }).catch(error => {
+                console.log("Browserat blokira muzikata:", error);
+            });
+            // -------------------------------
 
             setTimeout(() => {
                 overlay.style.opacity = '0';
@@ -650,12 +658,12 @@
                     overlay.style.display = 'none';
                     document.body.style.overflowY = 'auto';
                     mainContent.style.opacity = '1';
-                    musicControl.style.opacity = '1';
+                    musicControl.style.opacity = '1'; // Показваме бутона за звук
                     navbar.style.opacity = '1';
                     heroContent.style.transform = 'translateY(0)';
                     checkTimelineScroll();
                 }, 1200);
-            }, 2000);
+            }, 1500); // 3 секунди изчакване (твоята настройка)
         }
 
         // Timeline Scroll
