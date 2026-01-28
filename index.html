@@ -353,28 +353,33 @@
                     </div>
                 </div>
 
-                <div class="absolute bottom-8 animate-bounce cursor-pointer text-[#1A4D2E]" onclick="navigateTo('section-program')">
+                <div class="absolute bottom-8 animate-bounce cursor-pointer text-[#1A4D2E]" onclick="navigateTo('section-quote')">
                     <i class="fas fa-chevron-down text-2xl"></i>
                 </div>
             </section>
 
-            <!-- === NEW IMAGE BANNER SECTION === -->
-            <div class="relative w-full h-96 overflow-hidden flex items-center justify-center">
-                <!-- Background Image (Eucalyptus & White Flowers) -->
-                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop" 
-                     alt="Wedding Background" 
-                     class="absolute inset-0 w-full h-full object-cover brightness-75">
-                
-                <!-- Overlay Text -->
-                <div class="relative z-10 text-center px-6 animate-fade-in">
-                    <p class="serif text-3xl md:text-5xl text-white italic drop-shadow-lg mb-4">
-                        "Любовта е единственото нещо, което расте, когато се споделя."
-                    </p>
-                    <p class="text-white/90 text-sm uppercase tracking-[0.2em] font-bold">
-                        Антоан дьо Сент-Екзюпери
-                    </p>
+            <!-- === VINTAGE LETTER SECTION === -->
+            <section id="section-quote" class="py-16 bg-[#F9F7F2] flex justify-center overflow-hidden">
+                <div class="relative w-full max-w-4xl shadow-2xl mx-4 transform rotate-1 hover:rotate-0 transition duration-700 ease-out">
+                    
+                    <!-- Background Image: Old Paper, Quill & Hand -->
+                    <!-- Използвам филтър sepia и brightness, за да пасне на бежовата тема на сайта -->
+                    <img src="https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=2070&auto=format&fit=crop" 
+                         alt="Hand writing letter" 
+                         class="w-full h-64 md:h-96 object-cover rounded-sm sepia-[0.4] brightness-110 contrast-[0.9]">
+                    
+                    <!-- The "Handwritten" Text -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-white/10 backdrop-blur-[1px]">
+                        <p class="calligraphy text-3xl md:text-5xl text-[#2c241b] leading-snug drop-shadow-sm transform -rotate-1" 
+                           style="text-shadow: 1px 1px 0px rgba(255,255,255,0.4);">
+                            "Любовта е единственото нещо,<br>което расте, когато се споделя."
+                        </p>
+                        <p class="text-[#2c241b] text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold mt-6 opacity-80">
+                            Антоан дьо Сент-Екзюпери
+                        </p>
+                    </div>
                 </div>
-            </div>
+            </section>
 
             <!-- Program Section (RESTORED ELEGANCE) -->
             <section id="section-program" class="py-32 bg-white overflow-hidden">
