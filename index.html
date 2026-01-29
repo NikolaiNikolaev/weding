@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Сватбата на Регина и Николай | 06.06.2026</title>
+    <link rel="icon" href="data:,">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Fonts -->
@@ -1010,17 +1011,33 @@
         
         function toggleChat() { document.getElementById('ai-chat-window').classList.toggle('hidden'); }
 
-        // === 7. GEMINI AI CHAT ===
+        // === 7. GEMINI AI CHAT (ПОПРАВЕН) ===
         const apiKey = "AIzaSyAA5IK0NuzQ6E0WugzFFXXnYQKFdGz-R_g"; 
         
         async function callGemini(p, s="") { 
-            const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                method:'POST', 
-                headers:{'Content-Type':'application/json'}, 
-                body:JSON.stringify({contents:[{parts:[{text:p}]}], systemInstruction:{parts:[{text:s}]}})
-            }); 
-            const d = await r.json(); 
-            return d.candidates[0].content.parts[0].text; 
+            // ТУК Е ПОПРАВКАТА: добавихме "-latest" в края на модела и try-catch блок
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: p }] }], 
+                        systemInstruction: { parts: [{ text: s }] }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Грешка от Google: ${response.status}`);
+                }
+
+                const data = await response.json(); 
+                return data.candidates[0].content.parts[0].text;
+            } catch (error) {
+                console.error("AI Error:", error);
+                return "В момента имам технически затруднения, моля опитайте пак по-късно.";
+            }
         }
 
         async function handleChatSubmit(e) {
@@ -1031,6 +1048,7 @@
             
             if (!question) return;
 
+            // 1. Показване на въпроса
             container.innerHTML += `
                 <div class="flex justify-end mb-2">
                     <div class="bg-[#1A4D2E] text-white p-3 rounded-lg rounded-tr-none shadow-sm max-w-[85%] text-right text-sm">
@@ -1040,6 +1058,7 @@
             input.value = "";
             container.scrollTop = container.scrollHeight;
 
+            // 2. Индикатор "Пише..."
             const loadingId = "loading-" + Date.now();
             container.innerHTML += `
                 <div id="${loadingId}" class="flex justify-start mb-2">
@@ -1049,7 +1068,7 @@
                 </div>`;
             container.scrollTop = container.scrollHeight;
 
-            // Твоят пълен контекст (запазен)
+            // 3. КОНТЕКСТЪТ (Запазваме твоя текст)
             const weddingContext = `
                 ТИ СИ: Любезен и интелигентен сватбен асистент за сватбата на Регина и Николай.
                 ЦЕЛ: Да отговаряш на въпроси на гостите, използвайки САМО предоставената по-долу информация.
@@ -1089,24 +1108,22 @@
                 1. Ако въпросът е за час, място, дрес код или подаръци -> отговори директно с горната информация.
                 2. Ако питат "Какво да облека?" -> кажи за Cocktail Formal и задължително спомени забраната за жълто.
                 3. Ако питат за цветя -> обясни учтиво молбата да не се носят.
-                4. Ако въпросът е страничен (напр. "Какво е времето?"), отговори учтиво, но свържи отговора със сватбата (напр. "Надяваме се на слънчево време за ритуала на открито").
+                4. Ако въпросът е страничен (напр. "Какво е времето?"), отговори учтиво, но свържи отговора със сватбата.
                 5. Говори на български език, учтиво и приповдигнато.
             `;
 
-            try {
-                const answer = await callGemini(question, weddingContext);
-                document.getElementById(loadingId).remove();
-                
-                container.innerHTML += `
-                    <div class="flex justify-start mb-2">
-                        <div class="bg-white border border-gray-200 text-gray-800 p-3 rounded-lg rounded-tl-none shadow-sm max-w-[90%] text-sm leading-relaxed">
-                            ${answer}
-                        </div>
-                    </div>`;
-            } catch (err) {
-                document.getElementById(loadingId).remove();
-                container.innerHTML += `<div class="text-xs text-red-500">Грешка при свързване.</div>`;
-            }
+            // 4. Извикване на AI
+            const answer = await callGemini(question, weddingContext);
+
+            // 5. Показване на отговора
+            document.getElementById(loadingId).remove();
+            
+            container.innerHTML += `
+                <div class="flex justify-start mb-2">
+                    <div class="bg-white border border-gray-200 text-gray-800 p-3 rounded-lg rounded-tl-none shadow-sm max-w-[90%] text-sm leading-relaxed">
+                        ${answer}
+                    </div>
+                </div>`;
             container.scrollTop = container.scrollHeight;
         }
 
