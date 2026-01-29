@@ -720,8 +720,12 @@
                 'opt-yes': 'С радост ще присъстваме! 🥂', 'opt-no': 'За съжаление не можем 😞',
                 'btn-meat': '🥩 Месно', 'btn-veg': '🥗 Вегетарианско',
                 'al-gluten': 'Глутен', 'al-lactose': 'Лактоза', 'al-nuts': 'Ядки', 'al-sea': 'Морски дарове',
-                'ph-guest': 'Име и Фамилия', 'allergy-other': 'Други (моля уточнете)...', 'guest-message': 'Вашето съобщение тук...',
-                'photo-email': 'Моля, предоставете имейл адрес, на който да ги изпратим.',
+                'ph-guest': 'Име и Фамилия', 
+                
+                // ТУК СА ЛИПСВАЩИТЕ ПРЕВОДИ:
+                'input-other': 'Други (моля уточнете)...', 
+                'input-msg': 'Напишете вашето пожелание тук...',
+                'photo-email': 'Моля, предоставете Вашия имейл адрес',
                 
                 // Чат
                 'chat-title': 'Сватбен Асистент', 'chat-init': 'Здравейте! Имате ли въпроси?', 'btn-concierge': 'Сватбен Консиерж', 'chat-input': 'Въпрос...'
@@ -734,7 +738,7 @@
                 'hero-name-1': 'Regina <span class="italic text-[#1A4D2E] font-light">&</span>',
                 'hero-name-2': 'Nikolai',
                 'hero-date': 'June 06, 2026',
-                'hero-loc': 'Hotel "Hristovi", Sevlievo', // HOTEL translation
+                'hero-loc': 'Hotel "Hristovi", Sevlievo',
                 'cnt-months': 'Months', 'cnt-days': 'Days',
                 
                 'prog-title': 'Program of the Day',
@@ -751,7 +755,7 @@
                 'photo-quote': '"We have traveled a long way together, <br class="hidden md:block">and we would be happy for you to share this "stop" with us!"',
 
                 'details-title': 'Important Information',
-                'loc-title': 'Location', 'loc-name': 'Hotel "Hristovi"', // HOTEL translation
+                'loc-title': 'Location', 'loc-name': 'Hotel "Hristovi"',
                 'loc-desc': 'Sevlievo<br>The ceremony and reception are at the same place.', 'loc-nav': 'Navigation',
                 'dress-title': 'Dress Code: Cocktail Formal',
                 'dress-desc': 'Elegant look, balance between formal and party wear. Cocktail dresses and suits.',
@@ -774,8 +778,12 @@
                 'opt-yes': 'We will imply accept! 🥂', 'opt-no': 'Sadly, we cannot make it 😞',
                 'btn-meat': '🥩 Meat', 'btn-veg': '🥗 Vegetarian',
                 'al-gluten': 'Gluten', 'al-lactose': 'Lactose', 'al-nuts': 'Nuts', 'al-sea': 'Seafood',
-                'ph-guest': 'Full Name', 'allergy-other': 'Other (please specify)...', 'guest-message': 'Your message here...',
-                'photo-email': 'Please provide an email address to send them to.',
+                'ph-guest': 'Full Name', 
+                
+                // ТУК СА ЛИПСВАЩИТЕ ПРЕВОДИ (EN):
+                'input-other': 'Other (please specify)...', 
+                'input-msg': 'Write your wishes here...',
+                'photo-email': 'Please provide your email address',
                 
                 'chat-title': 'Wedding Assistant', 'chat-init': 'Hello! Do you have any questions?', 'btn-concierge': 'Wedding Concierge', 'chat-input': 'Question...'
             }
@@ -809,10 +817,6 @@
             document.querySelectorAll('.guest-name-input').forEach(input => {
                 input.placeholder = guestPlaceholder;
             });
-            
-            // Специално за новото поле за имейл
-            const emailInput = document.getElementById('photo-email');
-            if(emailInput) emailInput.placeholder = texts['ph-email'];
         });
 
         // === 2. ЛОГИКА ЗА ПЛИКА И МУЗИКАТА ===
@@ -923,16 +927,16 @@
 
             const count = document.getElementById('guest-count').value;
             const att = document.getElementById('attendance-select').value;
-            // Тук използваме правилното ID 'input-msg' за да избегнем конфликт
+            // Използваме 'input-msg', защото това ID е сложено първо в HTML-а
             const msg = document.getElementById('input-msg').value; 
-            const emailPhotos = document.getElementById('photo-email').value; // Взимаме имейла
+            const emailPhotos = document.getElementById('photo-email').value;
             
             let names = []; 
             document.querySelectorAll('.guest-name-input').forEach(i => names.push(i.value));
             
             let allergies = []; 
             document.querySelectorAll('.allergy-check:checked').forEach(c => allergies.push(c.value));
-            // Тук използваме 'input-other'
+            // Използваме 'input-other', защото това ID е сложено първо в HTML-а
             const other = document.getElementById('input-other').value; 
             if(other) allergies.push(other);
             
@@ -960,7 +964,6 @@
                 if (response.ok) {
                     document.getElementById('rsvp-form').style.display = 'none';
                     document.getElementById('rsvp-success').classList.remove('hidden');
-                    // Ако има charts, обновяваме ги (безопасна проверка)
                     if (typeof updateChartsWithNewData === "function") {
                         updateChartsWithNewData(att);
                     }
@@ -1046,7 +1049,7 @@
                 </div>`;
             container.scrollTop = container.scrollHeight;
 
-            // --- ТУК Е ТВОЯТ ПЪЛЕН КОНТЕКСТ, КОЙТО ПОИСКА ДА ВЪРНА ---
+            // Твоят пълен контекст (запазен)
             const weddingContext = `
                 ТИ СИ: Любезен и интелигентен сватбен асистент за сватбата на Регина и Николай.
                 ЦЕЛ: Да отговаряш на въпроси на гостите, използвайки САМО предоставената по-долу информация.
@@ -1131,7 +1134,7 @@
             });
         }
         
-        // Functions for charts/vows (keeping your existing logic)
+        // Functions for charts/vows
         async function generateVows() { const t = document.getElementById('vow-topic').value; const r = await callGemini(`Wedding vow: ${t}`, "Language: Bulgarian"); document.getElementById('vow-output').innerText = r; }
         let rsvpChartInstance = null;
         function renderCharts() { if(rsvpChartInstance) return; rsvpChartInstance = new Chart(document.getElementById('rsvpChart'), {type:'bar', data:{labels:['Yes','No'], datasets:[{label:'Guests',data:[0,0],backgroundColor:'#1A4D2E'}]}, options:{responsive:true,maintainAspectRatio:false}}); }
