@@ -289,11 +289,11 @@
     <div id="envelope-overlay">
         <div class="absolute top-10 right-10 z-50 flex gap-4">
             <button onclick="changeLanguage('bg')" class="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 hover:bg-white/20 transition group cursor-pointer shadow-lg">
-                <span class="text-2xl">🇧🇬</span>
+                <img src="https://flagcdn.com/w40/bg.png" alt="BG" class="w-6 h-auto rounded-sm shadow-sm">
                 <span class="text-white font-bold text-sm tracking-widest group-hover:underline">BG</span>
             </button>
             <button onclick="changeLanguage('en')" class="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 hover:bg-white/20 transition group cursor-pointer shadow-lg">
-                <span class="text-2xl">🇬🇧</span>
+                <img src="https://flagcdn.com/w40/gb.png" alt="EN" class="w-6 h-auto rounded-sm shadow-sm">
                 <span class="text-white font-bold text-sm tracking-widest group-hover:underline">EN</span>
             </button>
         </div>
@@ -311,7 +311,7 @@
 
                 <!-- Card Inside -->
                 <div class="card-preview">
-                    <p class="serif text-3xl md:text-4xl text-[#1A4D2E] italic">Регина & Николай</p>
+                    <p id="env-names" class="serif text-3xl md:text-4xl text-[#1A4D2E] italic">Регина & Николай</p>
                     <p class="text-xs uppercase mt-2 text-gray-400 tracking-[0.2em]">06.06.2026</p>
                 </div>
             </div>
@@ -365,10 +365,10 @@
                     <p id="hero-invite" class="text-xl md:text-2xl uppercase tracking-[0.2em] text-[#1A4D2E] font-bold mb-8 animate-fade-in shadow-sm inline-block px-6 py-2 bg-white/60 rounded-sm">Каним ви на нашата сватба</p>
                     
                     <div class="flex flex-col items-center justify-center space-y-2">
-                        <h1 class="serif text-6xl md:text-8xl lg:text-9xl text-gray-900 leading-none">
+                        <h1 id="hero-name-1" class="serif text-6xl md:text-8xl lg:text-9xl text-gray-900 leading-none italic">
                             Регина <span class="italic text-[#1A4D2E] font-light">&</span>
                         </h1>
-                        <h1 class="serif text-6xl md:text-8xl lg:text-9xl text-gray-900 leading-none mt-4">
+                        <h1 id="hero-name-2" class="serif text-6xl md:text-8xl lg:text-9xl text-gray-900 leading-none mt-4 italic">
                             Николай
                         </h1>
                     </div>
@@ -453,7 +453,7 @@
                             <div class="timeline-content-wrapper">
                                 <div class="mobile-time">15:00</div>
                                 <h3 id="ev-bride" class="serif text-3xl text-[#1A4D2E]">Взимане на булката</h3>
-                                <p class="text-gray-500 mt-2">Традиционно начало на празника.</p>
+                                <p id="prog-desc-1" class="text-gray-500 mt-2">Традиционно начало на празника.</p>
                             </div>
                         </div>
 
@@ -462,7 +462,7 @@
                             <div class="timeline-content-wrapper">
                                 <div class="mobile-time">16:30</div>
                                 <h3 id="ev-ritual" class="serif text-3xl text-[#1A4D2E]">Изнесен ритуал</h3>
-                                <p class="text-gray-500 mt-2">Заветното "Да" под открито небе.</p>
+                                <p id="prog-desc-2" class="text-gray-500 mt-2">Заветното "Да" под открито небе.</p>
                             </div>
                             <div class="timeline-dot"></div>
                             <div class="timeline-time-display">16:30</div>
@@ -475,7 +475,7 @@
                             <div class="timeline-content-wrapper">
                                 <div class="mobile-time">17:30</div>
                                 <h3 id="ev-drink" class="serif text-3xl text-[#1A4D2E]">Welcome Drink's & Фото</h3>
-                                <p class="text-gray-500 mt-2">Наздравици и снимки.</p>
+                                <p id="prog-desc-3" class="text-gray-500 mt-2">Наздравици и снимки.</p>
                             </div>
                         </div>
 
@@ -484,7 +484,7 @@
                             <div class="timeline-content-wrapper">
                                 <div class="mobile-time">18:30</div>
                                 <h3 id="ev-accom" class="serif text-3xl text-[#1A4D2E]">Настаняване</h3>
-                                <p class="text-gray-500 mt-2">Влизане в ресторанта.</p>
+                                <p id="prog-desc-4" class="text-gray-500 mt-2">Влизане в ресторанта.</p>
                             </div>
                             <div class="timeline-dot"></div>
                             <div class="timeline-time-display">18:30</div>
@@ -497,7 +497,7 @@
                             <div class="timeline-content-wrapper">
                                 <div class="mobile-time">19:00</div>
                                 <h3 id="ev-party" class="serif text-3xl text-[#1A4D2E]">Парти!</h3>
-                                <p class="text-gray-500 mt-2">"Захранване" на младоженците и начало на купона.</p>
+                                <p id="prog-desc-5" class="text-gray-500 mt-2">"Захранване" на младоженците и начало на купона.</p>
                             </div>
                         </div>
 
@@ -509,7 +509,7 @@
             <section id="section-details" class="py-24 bg-[#F9F7F2]">
                 <div class="max-w-6xl mx-auto px-6">
                     <div class="text-center mb-16">
-                        <h2 class="serif text-4xl mb-4 text-gray-900">Важна Информация</h2>
+                        <h2 id="details-title" class="serif text-4xl mb-4 text-gray-900">Важна Информация</h2>
                         <div class="h-px w-16 bg-gray-300 mx-auto"></div>
                     </div>
 
@@ -517,18 +517,18 @@
                         <!-- Location -->
                         <div class="bg-white p-10 rounded-sm shadow-sm hover:shadow-lg transition-all duration-300 text-center border-t-4 border-[#1A4D2E]">
                             <div class="text-3xl mb-4 text-[#1A4D2E]"><i class="fas fa-map-marker-alt"></i></div>
-                            <h3 class="serif text-xl mb-4 font-bold">Локация</h3>
-                            <p class="font-bold text-gray-800 mb-2">Комплекс "Христови"</p>
-                            <p class="text-gray-600 text-sm mb-6">гр. Севлиево<br>Ритуалът и тържеството са на едно място.</p>
-                            <a href="https://maps.google.com/?q=Complex+Hristovi+Sevlievo" target="_blank" class="text-xs uppercase font-bold border-b border-gray-300 pb-1 hover:border-[#1A4D2E] hover:text-[#1A4D2E] transition">Навигация</a>
+                            <h3 id="loc-title" class="serif text-xl mb-4 font-bold">Локация</h3>
+                            <p id="loc-name" class="font-bold text-gray-800 mb-2">Комплекс "Христови"</p>
+                            <p id="loc-desc" class="text-gray-600 text-sm mb-6">гр. Севлиево<br>Ритуалът и тържеството са на едно място.</p>
+                            <a id="loc-nav" href="https://maps.google.com/?q=Complex+Hristovi+Sevlievo" target="_blank" class="text-xs uppercase font-bold border-b border-gray-300 pb-1 hover:border-[#1A4D2E] hover:text-[#1A4D2E] transition">Навигация</a>
                         </div>
 
                         <!-- Dress Code -->
                         <div class="bg-white p-10 rounded-sm shadow-sm hover:shadow-lg transition-all duration-300 text-center border-t-4 border-[#1A4D2E]">
                             <div class="text-3xl mb-4 text-[#1A4D2E]"><i class="fas fa-tshirt"></i></div>
-                            <h3 class="serif text-xl mb-4 font-bold">Дрес Код: Cocktail Formal</h3>
-                            <p class="text-gray-600 text-xs italic mb-4 leading-relaxed">Елегантна визия, баланс между официално и парти облекло. Коктейлни рокли и костюми.</p>
-                            <p class="text-red-800/70 font-bold text-xs mb-4 uppercase tracking-wide border border-red-100 bg-red-50 py-2">⚠️ Молим да не носите жълто</p>
+                            <h3 id="dress-title class="serif text-xl mb-4 font-bold">Дрес Код: Cocktail Formal</h3>
+                            <p id="dress-desc" class="text-gray-600 text-xs italic mb-4 leading-relaxed">Елегантна визия, баланс между официално и парти облекло. Коктейлни рокли и костюми.</p>
+                            <p id="dress-warn" class="text-red-800/70 font-bold text-xs mb-4 uppercase tracking-wide border border-red-100 bg-red-50 py-2">⚠️ Молим да не носите жълто</p>
                             <div class="flex justify-center gap-3 mt-4">
                                 <div class="w-6 h-6 rounded-full bg-black border border-gray-200" title="Black"></div>
                                 <div class="w-6 h-6 rounded-full bg-[#1A4D2E] border border-gray-200" title="Dark Green"></div>
@@ -540,8 +540,8 @@
                          <!-- No Flowers Policy -->
                          <div class="bg-white p-10 rounded-sm shadow-sm hover:shadow-lg transition-all duration-300 text-center border-t-4 border-[#1A4D2E]">
                             <div class="text-3xl mb-4 text-[#1A4D2E]"><i class="fas fa-leaf"></i></div>
-                            <h3 class="serif text-xl mb-4 font-bold">Молба: Без Цветя</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed italic">
+                            <h3 id="flowers-title" class="serif text-xl mb-4 font-bold">Молба: Без Цветя</h3>
+                            <p id="flowers-desc" class="text-gray-600 text-sm leading-relaxed italic">
                                 "Вашето присъствие е най-големият подарък за нас! Тъй като сме осигурили красива цветна украса за празника, ще бъдем признателни, ако замените букетите с подкрепа за нашето бъдеще към подаръка ви. Нека запазим красотата на живите цветя в природата."
                             </p>
                         </div>
@@ -653,26 +653,39 @@
     </main>
 
     <footer class="bg-[#1A4D2E] text-white py-12 text-center" id="footer">
-        <h2 class="serif text-4xl mb-4">Регина & Николай</h2>
-        <p class="text-sm text-gray-300 uppercase tracking-widest mb-8">06.06.2026 • Севлиево</p>
+        <h2 id="footer-names" class="serif text-4xl mb-4">Регина & Николай</h2>
+        <p id="footer-loc" class="text-sm text-gray-300 uppercase tracking-widest mb-8">06.06.2026 • Севлиево</p>
     </footer>
 
     <script>
-        // === СИСТЕМА ЗА ЕЗИЦИ (С РЕФРЕШ) ===
-        
+       // === СИСТЕМА ЗА ЕЗИЦИ (ПЪЛЕН ПРЕВОД) ===
         const translations = {
             'bg': {
                 'txt-tap': 'Натиснете плика',
                 'nav-program': 'Програма', 'nav-details': 'Детайли', 'nav-rsvp': 'Потвърждение',
+                'env-names': 'Регина & Николай',
                 'hero-invite': 'Каним ви на нашата сватба',
+                'hero-name-1': 'Регина <span class="italic text-[#1A4D2E] font-light">&</span>',
+                'hero-name-2': 'Николай',
                 'hero-date': '06.06.2026 година',
                 'hero-loc': 'Комплекс "Христови", гр. Севлиево',
                 'cnt-months': 'Месеца', 'cnt-days': 'Дни',
                 'quote-text': '"Любовта е единственото нещо,<br>което расте, когато се споделя."',
                 'quote-author': 'Антоан дьо Сент-Екзюпери',
                 'prog-title': 'Програма на деня',
-                'ev-bride': 'Взимане на булката', 'ev-ritual': 'Изнесен ритуал', 
-                'ev-drink': "Welcome Drink's & Фото", 'ev-accom': 'Настаняване', 'ev-party': 'Парти!',
+                'ev-bride': 'Взимане на булката', 'prog-desc-1': 'Традиционно начало на празника.',
+                'ev-ritual': 'Изнесен ритуал', 'prog-desc-2': 'Заветното "Да" под открито небе.',
+                'ev-drink': "Welcome Drink's & Фото", 'prog-desc-3': 'Наздравици и снимки.',
+                'ev-accom': 'Настаняване', 'prog-desc-4': 'Влизане в ресторанта.',
+                'ev-party': 'Парти!', 'prog-desc-5': '"Захранване" на младоженците и начало на купона.',
+                'details-title': 'Важна Информация',
+                'loc-title': 'Локация', 'loc-name': 'Комплекс "Христови"', 
+                'loc-desc': 'гр. Севлиево<br>Ритуалът и тържеството са на едно място.', 'loc-nav': 'Навигация',
+                'dress-title': 'Дрес Код: Cocktail Formal',
+                'dress-desc': 'Елегантна визия, баланс между официално и парти облекло. Коктейлни рокли и костюми.',
+                'dress-warn': '⚠️ Молим да не носите жълто',
+                'flowers-title': 'Молба: Без Цветя',
+                'flowers-desc': '"Вашето присъствие е най-големият подарък за нас! Тъй като сме осигурили красива цветна украса за празника, ще бъдем признателни, ако замените букетите с подкрепа за нашето бъдеще към подаръка ви. Нека запазим красотата на живите цветя в природата."',
                 'photo-quote': '"Изминахме не малка част от живота си заедно, <br class="hidden md:block">ще се радваме да споделите тази "спирка" от него, заедно с нас!"',
                 'rsvp-title': 'Очакваме Ви!',
                 'rsvp-deadline': 'Краен срок за потвърждение: <br><strong>1-ви Април 2026 година</strong>',
@@ -680,20 +693,35 @@
                 'lbl-attend': 'Потвърждение', 'lbl-menu': 'Предпочитание за меню',
                 'lbl-allergies': 'Хранителни Алергии', 'lbl-wishes': 'Пожелания към младоженците',
                 'btn-send': 'Изпрати Потвърждение',
-                'success-title': 'Благодарим ви!'
+                'success-title': 'Благодарим ви!',
+                'footer-names': 'Регина & Николай', 'footer-loc': '06.06.2026 • Севлиево'
             },
             'en': {
                 'txt-tap': 'Tap to Open',
                 'nav-program': 'Program', 'nav-details': 'Details', 'nav-rsvp': 'RSVP',
+                'env-names': 'Regina & Nikolai',
                 'hero-invite': 'We invite you to our wedding',
+                'hero-name-1': 'Regina <span class="italic text-[#1A4D2E] font-light">&</span>',
+                'hero-name-2': 'Nikolai',
                 'hero-date': 'June 06, 2026',
                 'hero-loc': 'Complex "Hristovi", Sevlievo',
                 'cnt-months': 'Months', 'cnt-days': 'Days',
                 'quote-text': '"Love is the only thing that grows<br>when it is shared."',
                 'quote-author': 'Antoine de Saint-Exupéry',
                 'prog-title': 'Program of the Day',
-                'ev-bride': 'Picking up the Bride', 'ev-ritual': 'Wedding Ceremony', 
-                'ev-drink': 'Welcome Drinks & Photos', 'ev-accom': 'Guests Seating', 'ev-party': 'Party Time!',
+                'ev-bride': 'Picking up the Bride', 'prog-desc-1': 'Traditional start of the celebration.',
+                'ev-ritual': 'Wedding Ceremony', 'prog-desc-2': 'The sacred "Yes" under the open sky.',
+                'ev-drink': 'Welcome Drinks & Photos', 'prog-desc-3': 'Cheers and photos.',
+                'ev-accom': 'Guests Seating', 'prog-desc-4': 'Entering the restaurant.',
+                'ev-party': 'Party Time!', 'prog-desc-5': 'Welcoming the newlyweds and party start.',
+                'details-title': 'Important Information',
+                'loc-title': 'Location', 'loc-name': 'Complex "Hristovi"', 
+                'loc-desc': 'Sevlievo<br>The ceremony and reception are at the same place.', 'loc-nav': 'Navigation',
+                'dress-title': 'Dress Code: Cocktail Formal',
+                'dress-desc': 'Elegant look, balance between formal and party wear. Cocktail dresses and suits.',
+                'dress-warn': '⚠️ Please do not wear yellow',
+                'flowers-title': 'Request: No Flowers',
+                'flowers-desc': '"Your presence is the greatest gift for us! Since we have provided beautiful flower decoration, we would be grateful if you replace bouquets with support for our future. Let\'s keep the beauty of live flowers in nature."',
                 'photo-quote': '"We have traveled a long way together, <br class="hidden md:block">and we would be happy for you to share this "stop" with us!"',
                 'rsvp-title': 'We are waiting for you!',
                 'rsvp-deadline': 'RSVP Deadline: <br><strong>April 1st, 2026</strong>',
@@ -701,7 +729,8 @@
                 'lbl-attend': 'Attendance', 'lbl-menu': 'Menu Preference',
                 'lbl-allergies': 'Food Allergies', 'lbl-wishes': 'Wishes to the couple',
                 'btn-send': 'Send RSVP',
-                'success-title': 'Thank You!'
+                'success-title': 'Thank You!',
+                'footer-names': 'Regina & Nikolai', 'footer-loc': '06.06.2026 • Sevlievo'
             }
         };
 
@@ -713,16 +742,11 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            // Проверяваме запазения език (или BG по подразбиране)
             const currentLang = localStorage.getItem('wedding_lang') || 'bg';
             const texts = translations[currentLang];
-
-            // Прилагаме преводите
             for (const [id, text] of Object.entries(texts)) {
                 const element = document.getElementById(id);
-                if (element) {
-                    element.innerHTML = text; 
-                }
+                if (element) element.innerHTML = text; 
             }
         });
         
@@ -883,10 +907,31 @@
             else { m.play(); b.classList.add('playing-animation'); b.innerHTML = '<i class="fas fa-volume-up"></i>'; }
             isPlaying = !isPlaying;
         }
+        
+        // === MUSIC CONTROL (FIXED) ===
+        function toggleMusic() {
+            const m = document.getElementById('bg-music');
+            const b = document.getElementById('music-btn');
+            
+            // Проверяваме дали музиката е на пауза
+            if (m.paused) {
+                m.play();
+                b.classList.add('playing-animation');
+                // Връщаме иконката за звук
+                b.innerHTML = '<span id="music-icon"><i class="fas fa-volume-up"></i></span>';
+            } else {
+                m.pause();
+                b.classList.remove('playing-animation');
+                // Слагаме иконка за без звук
+                b.innerHTML = '<span id="music-icon"><i class="fas fa-volume-mute"></i></span>';
+            }
+        }
 
         // Nav & Logic
+        // Nav
         function navigateTo(id) { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 80, behavior: "smooth" }); }
         function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        function toggleChat() { document.getElementById('ai-chat-window').classList.toggle('hidden'); }
 
         const apiKey = "AIzaSyBCV708gDyiptyHI1XB1u1fzyoRVuo6KsE"; 
         const modeToggle = document.getElementById('mode-toggle'); const viewInvite = document.getElementById('view-invite'); const viewReport = document.getElementById('view-report');
