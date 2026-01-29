@@ -774,6 +774,9 @@
             document.querySelectorAll('.guest-name-input').forEach(input => {
                 input.placeholder = guestPlaceholder;
             });
+            
+            const emailInput = document.getElementById('photo-email');
+            if(emailInput) emailInput.placeholder = texts['photo-email'];
         });
 
         // === 2. ЛОГИКА ЗА ПЛИКА И МУЗИКАТА ===
@@ -958,14 +961,13 @@
         
         function toggleChat() { document.getElementById('ai-chat-window').classList.toggle('hidden'); }
 
-       // === 7. GEMINI AI CHAT (ФИНАЛНА ПОПРАВКА) ===
-        // Твоят ключ (вече е вграден)
+        // === 7. GEMINI AI CHAT (ПОПРАВЕН АДРЕС) ===
+        // Този ключ е валиден (от твоята грешка)
         const apiKey = "AIzaSyAA5IK0NuzQ6E0WugzFFXXnYQKFdGz-R_g"; 
         
         async function callGemini(p, s="") { 
-            // ПРОМЯНА: Използваме фиксирана версия 'gemini-1.5-flash-002', която е най-стабилна в момента
-            // Добавихме .trim() на ключа, за да махнем евентуални празни места
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-002:generateContent?key=${apiKey.trim()}`;
+            // ВАЖНО: Върнахме се на стандартния модел 'gemini-1.5-flash', който работи винаги.
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`;
             
             try {
                 const response = await fetch(url, {
@@ -973,23 +975,21 @@
                     headers: {'Content-Type': 'application/json'}, 
                     body: JSON.stringify({
                         contents: [{ parts: [{ text: p }] }], 
-                        // System instructions са поддържани само в v1beta и по-новите модели
                         systemInstruction: { parts: [{ text: s }] }
                     })
                 });
 
                 if (!response.ok) {
-                    // Ако пак даде грешка, ще я видим в детайли
                     const errorData = await response.json();
                     console.error("Google API Detail Error:", errorData);
-                    throw new Error(`Грешка от Google: ${response.status} - ${errorData.error?.message || 'Неизвестна'}`);
+                    throw new Error(`Грешка от Google: ${response.status}`);
                 }
 
                 const data = await response.json(); 
                 return data.candidates[0].content.parts[0].text;
             } catch (error) {
                 console.error("AI Error:", error);
-                return "В момента имам технически затруднения (сървърна грешка), моля опитайте пак по-късно.";
+                return "В момента имам технически затруднения, моля опитайте пак по-късно.";
             }
         }
 
@@ -1001,7 +1001,6 @@
             
             if (!question) return;
 
-            // 1. Показване на въпроса
             container.innerHTML += `
                 <div class="flex justify-end mb-2">
                     <div class="bg-[#1A4D2E] text-white p-3 rounded-lg rounded-tr-none shadow-sm max-w-[85%] text-right text-sm">
@@ -1011,7 +1010,6 @@
             input.value = "";
             container.scrollTop = container.scrollHeight;
 
-            // 2. Индикатор "Пише..."
             const loadingId = "loading-" + Date.now();
             container.innerHTML += `
                 <div id="${loadingId}" class="flex justify-start mb-2">
@@ -1065,12 +1063,8 @@
                 5. Говори на български език, учтиво и приповдигнато.
             `;
 
-            // 4. Извикване на AI
-            const answer = await callGemini(question, weddingContext);
-
-            // 5. Показване на отговора
-            const loader = document.getElementById(loadingId);
-            if(loader) loader.remove();
+           const answer = await callGemini(question, weddingContext);
+            document.getElementById(loadingId).remove();
             
             container.innerHTML += `
                 <div class="flex justify-start mb-2">
@@ -1105,7 +1099,6 @@
             });
         }
         
-        // Functions for charts/vows
         async function generateVows() { const t = document.getElementById('vow-topic').value; const r = await callGemini(`Wedding vow: ${t}`, "Language: Bulgarian"); document.getElementById('vow-output').innerText = r; }
         let rsvpChartInstance = null;
         function renderCharts() { if(rsvpChartInstance) return; rsvpChartInstance = new Chart(document.getElementById('rsvpChart'), {type:'bar', data:{labels:['Yes','No'], datasets:[{label:'Guests',data:[0,0],backgroundColor:'#1A4D2E'}]}, options:{responsive:true,maintainAspectRatio:false}}); }
