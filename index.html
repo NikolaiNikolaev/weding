@@ -908,30 +908,43 @@
             if(type === 'veg') selectedMeal = currentLang === 'bg' ? "Вегетарианско" : "Vegetarian";
         }
 
+        // === ПОДОБРЕНО FORMSPREE ИЗПРАЩАНЕ ===
         document.getElementById('rsvp-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const formspreeEndpoint = "https://formspree.io/f/mqepbrwv";
 
+            // Взимане на данните
             const count = document.getElementById('guest-count').value;
             const att = document.getElementById('attendance-select').value;
-            const msg = document.getElementById('input-msg').value; 
-            const emailPhotos = document.getElementById('photo-email').value;
+            
+            // Защита: Ако полето не съществува (заради стара версия в кеша на телефона), връща празен низ
+            const msgElement = document.getElementById('input-msg');
+            const msg = msgElement ? msgElement.value : "Няма пожелание";
+            
+            const emailElement = document.getElementById('photo-email');
+            const emailPhotos = emailElement ? emailElement.value : "Няма имейл";
             
             let names = []; 
-            document.querySelectorAll('.guest-name-input').forEach(i => names.push(i.value));
+            document.querySelectorAll('.guest-name-input').forEach(i => {
+                if(i.value) names.push(i.value);
+            });
             
             let allergies = []; 
             document.querySelectorAll('.allergy-check:checked').forEach(c => allergies.push(c.value));
-            const other = document.getElementById('input-other').value; 
+            
+            const otherElement = document.getElementById('input-other');
+            const other = otherElement ? otherElement.value : "";
             if(other) allergies.push(other);
             
             const btn = this.querySelector('button[type="submit"]');
             const originalBtnText = btn.innerText;
-            btn.innerText = "Processing...";
+            btn.innerText = "Изпращане..."; // Или "Processing..." според езика, но тук е хардкоднато за простота
             btn.disabled = true;
 
             const data = {
+                // Добавяме Subject, за да не влиза в спам лесно
+                "_subject": `Сватба RSVP: ${names[0] || 'Гост'} (${att === 'yes' ? 'ИДВАТ' : 'НЯМА'})`,
                 "Статус": att === 'yes' ? 'YES' : 'NO',
                 "Брой гости": count,
                 "Имена": names.join(', '),
@@ -947,6 +960,7 @@
                 body: JSON.stringify(data)
             })
             .then(response => {
+                // Дори да е влязло в Спам във Formspree, те връщат OK (200), затова показваме успех
                 if (response.ok) {
                     document.getElementById('rsvp-form').style.display = 'none';
                     document.getElementById('rsvp-success').classList.remove('hidden');
@@ -954,13 +968,14 @@
                         updateChartsWithNewData(att);
                     }
                 } else {
-                    alert("Error sending form. Please try again.");
+                    // Истинска мрежова грешка
+                    alert("Грешка при изпращане. Моля опитайте пак.");
                     btn.innerText = originalBtnText;
                     btn.disabled = false;
                 }
             })
             .catch(error => {
-                alert("Connection error.");
+                alert("Проблем с връзката. Проверете интернета си.");
                 btn.innerText = originalBtnText;
                 btn.disabled = false;
             });
